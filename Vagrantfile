@@ -8,7 +8,8 @@
 Vagrant.configure(2) do |config|
 
   config.vm.define "lr49", primary: true do |lr49|
-    lr49.vm.box = "lr-49b"
+    # lr49.vm.box = "lr-49b"
+    lr49.vm.box = "jimklo/lr-ubuntu-49"
     lr49.vm.host_name = "lr49.local"
 
     lr49.vm.network "private_network", ip: "10.0.0.49"
@@ -26,7 +27,8 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "lr51" do |lr51|
-    lr51.vm.box = "lr-51b"
+    # lr51.vm.box = "lr-51b"
+    lr51.vm.box = "jimklo/lr-ubuntu-51"
     lr51.vm.host_name = "lr51.local"
 
     lr51.vm.network "private_network", ip: "10.0.0.51"
@@ -48,7 +50,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "lruser" do |lruser|
     # lruser.vm.box = "rjkernick/linuxMint17Xfce"
-    lruser.vm.box = "lruserb"
+    # lruser.vm.box = "lruserb"
+    lruser.vm.box = "jimklo/lr-user"
     lruser.vm.host_name = "lruser.local"
 
     # lruser.vm.network "private_network", ip: "10.0.0.5"
