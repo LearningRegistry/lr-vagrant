@@ -7,7 +7,11 @@
 # you're doing.
 Vagrant.configure(2) do |config|
 
-  config.vm.define "lr49", primary: true do |lr49|
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.include_offline = true
+
+  config.vm.define "lr49", primary: true  do |lr49|
     # lr49.vm.box = "lr-49b"
     lr49.vm.box = "jimklo/lr-ubuntu-49"
     lr49.vm.host_name = "lr49.local"
@@ -23,7 +27,7 @@ Vagrant.configure(2) do |config|
       vb.memory = "1024"
 
       vb.name = "LR Node v.49"
-   end
+    end
   end
 
   config.vm.define "lr51" do |lr51|
@@ -34,6 +38,8 @@ Vagrant.configure(2) do |config|
     lr51.vm.network "private_network", ip: "10.0.0.51"
     lr51.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
     lr51.ssh.insert_key = false
+
+
 
     lr51.vm.provider "virtualbox" do |vb|
       # Display the VirtualBox GUI when booting the machine
