@@ -16,8 +16,9 @@ Vagrant.configure(2) do |config|
     lr49.vm.box = "jimklo/lr-ubuntu-49"
     lr49.vm.host_name = "lr49.local"
 
-    lr49.vm.network "private_network", ip: "10.0.0.49"
+    lr49.vm.network "private_network", ip: "10.0.1.49"
     lr49.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    # lr49.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5984, auto_correct: true
     lr49.ssh.insert_key = false
     lr49.vm.provider "virtualbox" do |vb|
       # Display the VirtualBox GUI when booting the machine
@@ -28,30 +29,88 @@ Vagrant.configure(2) do |config|
 
       vb.name = "LR Node v.49"
     end
+
+    lr49.vm.provision "shell", path: "bin/post-provision-lr49.sh",
+      args: ["AF82338A", "lr49.local"]
+
   end
 
-  config.vm.define "lr51" do |lr51|
-    # lr51.vm.box = "lr-51b"
-    lr51.vm.box = "jimklo/lr-ubuntu-51"
-    lr51.vm.host_name = "lr51.local"
 
-    lr51.vm.network "private_network", ip: "10.0.0.51"
-    lr51.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-    lr51.ssh.insert_key = false
+  lr51Nodes = {
+    "lr51" => 
+      { 
+        ip: 51,
+        keydir: "a",
+        signkey: "5AC53DD3"
+      }, 
+    "lr51a" => 
+      { 
+        ip: 52,
+        keydir: "a",
+        signkey: "5AC53DD3"
+      },
+    "lr51b" => 
+      { 
+        ip: 53,
+        keydir: "b",
+        signkey: "5AC53DD3"
+      },
+    "lr51c" => 
+      { 
+        ip: 54,
+        keydir: "a",
+        signkey: "5AC53DD3"
+      }
+  }
+ 
 
+  lr51Nodes.each_pair do |nodename, node_info|
+    base_ip = node_info[:ip]
+    key_dir = node_info[:keydir]
+    signkey = node_info[:signkey]
 
+    config.vm.define nodename do |lr51|
+      # lr51.vm.box = "lr-51b"
+      lr51.vm.box = "jimklo/lr-ubuntu-51"
+      lr51.vm.host_name = "#{nodename}.local"
 
-    lr51.vm.provider "virtualbox" do |vb|
-      # Display the VirtualBox GUI when booting the machine
-      vb.gui = false
-    
-      # Customize the amount of memory on the VM:
-      vb.memory = "1024"
+      lr51.vm.network "private_network", ip: "10.0.1.#{base_ip}"
+      lr51.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+      # lr51.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5985, auto_correct: true
+      lr51.ssh.insert_key = false
 
-      vb.name = "LR Node v.51"
+      lr51.vm.provision "shell", path: "bin/post-provision-lr51.sh",
+          args:["#{signkey}", "#{nodename}.local"]
+
+      if ["lr51a", "lr51b", "lr51c"].include?(nodename)
+        lr51.vm.provision "configure-whitelist", type:"shell", path: "bin/install_whitelist_key.py",
+          args:["-keydir", "/vagrant/signing_keys/pub_keys_#{key_dir}/"]
+
+        lr51.vm.provision "restart-node", type:"shell", inline: <<-SCRIPT
+          sudo service learningregistry stop
+          sleep 60
+          sudo service learningregistry start
+          sleep 10
+          sudo cat /var/log/learningregistry/uwsgi.log
+        SCRIPT
+
+        lr51.vm.provision "fix-couchdb", type:"shell", inline: <<-SCRIPT
+          /home/learnreg/env/bin/python /vagrant/bin/fix_couch.py -audience #{nodename}.local
+        SCRIPT
+      end
+
+      lr51.vm.provider "virtualbox" do |vb|
+        # Display the VirtualBox GUI when booting the machine
+        vb.gui = false
+      
+        # Customize the amount of memory on the VM:
+        vb.memory = "1024"
+
+        vb.name = "LR Node v.51 #{nodename}"
+      end
     end
-  end
 
+  end
 
 
   config.vm.define "lruser" do |lruser|
