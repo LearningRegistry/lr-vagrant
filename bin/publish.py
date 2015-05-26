@@ -126,8 +126,14 @@ if __name__ == "__main__":
 		}
 
 	last_doc_id_list = []
-	with open(args.idfile, "rb") as last:
-		last_doc_id_list += json.load(last)
+	try:
+		with open(args.idfile, "rb") as last:
+			last_doc_id_list += json.load(last)
+	except IOError as e:
+		if e.errno == 2:
+			print "Input file {0} doesn't exist".format(args.idfile)
+		else:
+			raise e;
 
 	doc_id_list = []
 
