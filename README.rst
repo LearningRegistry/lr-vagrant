@@ -120,3 +120,139 @@ Signing keys for performing external document signing are located in ``./signing
 | 0180320D8A7698E0104790374212BA1AAF82338A | vagrant    | jim.klo+test.49@learningregistry.org   |
 +------------------------------------------+------------+----------------------------------------+
 
+Workflows
+=========
+
+Test .49 to .51 distribution
+----------------------------
+
+Steps
+^^^^^
+
+0. Provision 2 nodes
+
+     a) lr49.local (node A)
+     b) lr51.local (node B)
+
+1. Configure node distribution
+	 
+	 a) lr49.local --> lr51.local
+	    
+2. Publish .49 document to node A. (expect success)
+
+3. Publish .51 document to node A. (expect failure)
+   
+4. Trigger distribution on node A.
+
+5. Validate .49 document is on node B.
+
+6. Destroy all nodes
+
+7. Provision 2 nodes
+
+     a) lr49.local (node A)
+     b) lr51.local (node B)
+
+8. Configure node distribution
+	 
+	 a) lr51.local --> lr49.local
+	    
+9. Publish .49 document to node B. (expect success)
+
+10. Publish .51 document to node B. (expect success)
+   
+11. Trigger distribution on node B.
+
+12. Validate .49 document is on node A.
+
+13. Validate .51 document is on node A.
+
+
+Commands
+^^^^^^^^
+
+.. code-block:: bash
+
+    vagrant up lr49 lr51
+    vagrant ssh lr49 -c "/home/learnreg/env/bin/python /vagrant/bin/distribute.py -node http://lr49.local -target http://lr51.local -contact jim.klo@learningregistry.org"
+	vagrant ssh lr49 -c "sudo service learningregistry stop; sleep 60; sudo service learningregistry start"
+	vagrant ssh lr49 -c "curl -X POST http://lr49.local/distribute"
+	# publish documents on lr49.local (publish script changed)
+	# verify documents on lr51.local (check in browser)
+	vagrant destroy lr49 lr51
+
+	vagrant up lr49 lr51
+    vagrant ssh lr51 -c "/home/learnreg/env/bin/python /vagrant/bin/distribute.py -node http://lr51.local -target http://lr49.local -contact jim.klo@learningregistry.org"
+	vagrant ssh lr51 -c "sudo service learningregistry stop; sleep 60; sudo service learningregistry start"
+	vagrant ssh lr51 -c "curl -X POST http://lr51.local/distribute"
+	# publish documents on lr51.local (publish script changed)
+	# verify documents on lr49.local (check in browser)
+	vagrant destroy lr49 lr51
+
+
+
+Test .51 Whitelist Keys
+-----------------------
+
+Steps
+^^^^^
+
+0. Create new GPG keys
+
+     a) 2 keys will be installed as whitelist keys
+     b) 1 key will be installed as node signing key
+     c) 1 key will be used as a local signing key
+
+1. Provision 3 nodes:
+
+     a) lr51a.local (node A)
+
+          0. install node signing key
+          1. install whitelist key A 
+
+     b) lr51b.local (node B)
+
+          0. install whitelist key B
+
+     c) lr51c.local (node C)
+
+          0. install whitelist key A
+
+2. Configure node distribution
+	 
+	 a) lr51a.local --> lr51b.local
+	 b) lr51a.local --> lr51c.local
+	    
+3. Publish a series of documents and replacments to lr51a.local
+
+	 a) local signed original doc and local signed replacement
+	 	  
+	 	  0. this should always work (nodes A, B and C)
+	 	  
+	 b) local signed original doc and whitelist key A signed replacement
+		  
+		  0. this should work on nodes trusting whitelist key A (nodes A and C)
+	
+	 c) node signed original doc and whitelist key A signed replacement
+
+	      0. this should work on nodes trusting whitelist key A (nodes A and C)
+	      
+	 d) node signed original doc and whitelist key B signed replacement
+
+	      0. this should work on nodes trusting whitelist key B (node B)
+             
+4. Trigger distribution on node A.
+
+5. Verify each nodes' distribution content.
+   
+
+Commands
+^^^^^^^^
+
+.. code-block:: bash
+
+    vagrant up lr51a lr51b lr51c; ./test/test_distribute_whitelist.sh; ./test/test_whitelist.sh; vagrant ssh lr51a -c "curl -X POST http://lr51a.local/distribute"
+
+
+
+
