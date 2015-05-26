@@ -4,6 +4,9 @@ PUBLISH_BIN=./bin/publish.py
 NODE_NAME=lr51a
 NUM_ENV=1
 
+mkdir tmp
+rm -f tmp/*
+
 #publish a normal envelope
 ${PUBLISH_BIN} --mode publish \
    --node ${NODE_NAME} --sign local --num ${NUM_ENV} \
