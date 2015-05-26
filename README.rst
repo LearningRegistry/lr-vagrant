@@ -59,6 +59,7 @@ Instructions
 
 6. VMs should be running.
 
+
 Notes
 -----
 * You will need approximately 50 GB free on your host machine with 8GB RAM or more, 16+ preferred.
@@ -69,4 +70,53 @@ Notes
 	::
 
 		$ vagrant box list
+
 * You may be prompted to enter your host machine admin password to update ``/etc/hosts`` or equivalent on Windows.
+* When the box is launched, this directory is shared on the the vagrang box as ``/vagrant``
+  
+
+Scripts
+=======
+
+The ``bin`` directory contains a list of misc scripts that can be run via
+
+	**Using bash**
+
+	::
+	
+	    $ vagrant ssh <boxname> -c '/vagrant/bin/<script name>'
+
++-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| Script Name                                                 | Description                                                                                  |
++=============================================================+==============================================================================================+
+| ``set-insecure-key.sh``                                     | Preps a vagrant box for repackaging.                                                         |
++-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| ``provision-lr-branch.sh <remote_name> <remote_url> <tag>`` | Adds a new remote to the existing checked out LR code base and                               |
+|                                                             | checks out the specified tag.                                                                |
++-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| ``provision-fix-start-script.sh``                           | Runs the LR ``service_util.py`` with default options and then                                |
+|                                                             | replaces the existing script in ``/etc/init.d/`` with the newly                              |
+|                                                             | generated one.                                                                               |
++-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| ``install_whitelist_key.py``                                | Configures ``/vagrant/signing_keys/pub_keys/`` as the Admin Whitelist Public Keys directory. |
++-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+
+
+
+GPG Public and Private Keys
+===========================
+
+Signing keys for performing external document signing are located in ``./signing_keys``.
+
++------------------------------------------+------------+----------------------------------------+
+| Key ID / Fingerprint                     | Passphrase | email                                  |
++==========================================+============+========================================+
+| 175FBB7D5D6F5B9A504F95D8B7B49BA3A7409F8A | whitelist  | jim.klo+whitelist@learningregistry.org |
++------------------------------------------+------------+----------------------------------------+
+| 01916AE1DC8F279352E3FE6705510FF20CC118C7 | vagrant    | jim.klo+vagrant@learningregistry.org   |
++------------------------------------------+------------+----------------------------------------+
+| 59CB75D2C7D6F8FB649E30EF9E735BEE5AC53DD3 | vagrant    | jim.klo+test.51@learningregistry.org   |
++------------------------------------------+------------+----------------------------------------+
+| 0180320D8A7698E0104790374212BA1AAF82338A | vagrant    | jim.klo+test.49@learningregistry.org   |
++------------------------------------------+------------+----------------------------------------+
+
