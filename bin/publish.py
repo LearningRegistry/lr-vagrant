@@ -27,7 +27,7 @@ credentials.update({
 	"resource_owner_secret": lr51["tokens"]["node_sign_token"]
 	})
 
-def make_test_envelope(version=1, mode="publish", msg="This is a Test"):
+def make_test_envelope(version=1, mode="publish", msg="This is a Test", doc_version="0.51.0"):
 	doc_id = uuid.uuid1()
 	ts = datetime.utcnow()
 	template = {
@@ -96,6 +96,8 @@ if __name__ == "__main__":
 	ap.add_argument('--outidfile', default="idfile.json")
 	ap.add_argument('--num', type=int, default=10)
 	ap.add_argument('--msg', type=str, default="This is a test")
+	ap.add_argument('--doc_version', type=str, default="0.51.0")
+
 
 
 
@@ -156,7 +158,7 @@ if __name__ == "__main__":
 	envelope_list = []
 	for i in range(0, args.num):
 		
-		env = make_test_envelope(mode=args.mode, msg=args.msg)
+		env = make_test_envelope(mode=args.mode, msg=args.msg, doc_version=args.doc_version)
 		envelope_list.append(env)
 		# print json.dumps(env, indent=4)
 
