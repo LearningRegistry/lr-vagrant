@@ -46,14 +46,14 @@ Instructions
 1. Install VirtualBox https://www.virtualbox.org
 2. Install Vagrant https://www.vagrantup.com
 3. Open a Terminal, shell, or command prompt and clone this repository.
-		
+
 	**Using bash**
 
 	::
 
 	    $ mkdir -p /<some work path>/
 	    $ cd /<some work path>/
-	    $ git clone https://bitbucket.org/jimklo/lr-vagrant.git lr-vagrant
+	    $ git clone https://github.com/LearningRegistry/lr-vagrant.git lr-vagrant
 	    $ cd lr-vagrant
 
 4. Install some vagrant plugins.
@@ -65,7 +65,7 @@ Instructions
     	$ vagrant plugin install vagrant-hostmanager
 
 5. Launch some VM's. Each line launches a different VM.
-	
+
 	**Using bash**
 
 	::
@@ -88,9 +88,10 @@ Notes
 
 		$ vagrant box list
 
+* You can set an environment variable in your profile if you want to use an external drive to store VMs: ``export VAGRANT_HOME=/Volumes/MyExternalDrive/vagrant``
 * You may be prompted to enter your host machine admin password to update ``/etc/hosts`` or equivalent on Windows.
-* When the box is launched, this directory is shared on the the vagrang box as ``/vagrant``
-  
+* When the box is launched, this directory is shared on the the vagrant box as ``/vagrant``
+
 
 Scripts
 =======
@@ -100,7 +101,7 @@ The ``bin`` directory contains a list of misc scripts that can be run via
 	**Using bash**
 
 	::
-	
+
 	    $ vagrant ssh <boxname> -c '/vagrant/bin/<script name>'
 
 +-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
@@ -152,13 +153,13 @@ Steps
      b) lr51.local (node B)
 
 1. Configure node distribution
-	 
+
 	 a) lr49.local --> lr51.local
-	    
+
 2. Publish .49 document to node A. (expect success)
 
 3. Publish .51 document to node A. (expect failure)
-   
+
 4. Trigger distribution on node A.
 
 5. Validate .49 document is on node B.
@@ -171,13 +172,13 @@ Steps
      b) lr51.local (node B)
 
 8. Configure node distribution
-	 
+
 	 a) lr51.local --> lr49.local
-	    
+
 9. Publish .49 document to node B. (expect success)
 
 10. Publish .51 document to node B. (expect success)
-   
+
 11. Trigger distribution on node B.
 
 12. Validate .49 document is on node A.
@@ -225,7 +226,7 @@ Steps
      a) lr51a.local (node A)
 
           0. install node signing key
-          1. install whitelist key A 
+          1. install whitelist key A
 
      b) lr51b.local (node B)
 
@@ -236,32 +237,32 @@ Steps
           0. install whitelist key A
 
 2. Configure node distribution
-	 
+
 	 a) lr51a.local --> lr51b.local
 	 b) lr51a.local --> lr51c.local
-	    
+
 3. Publish a series of documents and replacments to lr51a.local
 
 	 a) local signed original doc and local signed replacement
-	 	  
+
 	 	  0. this should always work (nodes A, B and C)
-	 	  
+
 	 b) local signed original doc and whitelist key A signed replacement
-		  
+
 		  0. this should work on nodes trusting whitelist key A (nodes A and C)
-	
+
 	 c) node signed original doc and whitelist key A signed replacement
 
 	      0. this should work on nodes trusting whitelist key A (nodes A and C)
-	      
+
 	 d) node signed original doc and whitelist key B signed replacement
 
 	      0. this should work on nodes trusting whitelist key B (node B)
-             
+
 4. Trigger distribution on node A.
 
 5. Verify each nodes' distribution content.
-   
+
 
 Commands
 ^^^^^^^^
