@@ -27,9 +27,32 @@ Vagrant.configure(2) do |config|
   config.hostmanager.manage_host = true
   config.hostmanager.include_offline = true
 
-  config.vm.define "lr49", primary: true  do |lr49|
+  config.vm.define "lr51", primary: true  do |lr51|
+    lr51.vm.box = "learningregistry/lr-ubuntu-51"
+    lr51.vm.host_name = "lr51.local"
+
+    lr51.vm.network "private_network", ip: "10.0.1.51"
+    lr51.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    # lr51.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5984, auto_correct: true
+    lr51.ssh.insert_key = false
+    lr51.vm.provider "virtualbox" do |vb|
+      # Display the VirtualBox GUI when booting the machine
+      vb.gui = false
+
+      # Customize the amount of memory on the VM:
+      vb.memory = "1024"
+
+      vb.name = "LR Node v.51"
+    end
+
+    lr51.vm.provision "shell", path: "bin/post-provision-lr51.sh",
+      args: ["5AC53DD3", "lr51.local"]
+
+  end
+
+  config.vm.define "lr49", primary: false  do |lr49|
     # lr49.vm.box = "lr-49b"
-    lr49.vm.box = "jimklo/lr-ubuntu-49"
+    lr49.vm.box = "learningregistry/lr-ubuntu-49"
     lr49.vm.host_name = "lr49.local"
 
     lr49.vm.network "private_network", ip: "10.0.1.49"
@@ -39,7 +62,7 @@ Vagrant.configure(2) do |config|
     lr49.vm.provider "virtualbox" do |vb|
       # Display the VirtualBox GUI when booting the machine
       vb.gui = false
-    
+
       # Customize the amount of memory on the VM:
       vb.memory = "1024"
 
@@ -52,42 +75,36 @@ Vagrant.configure(2) do |config|
   end
 
 
-  lr51Nodes = {
-    "lr51" => 
-      { 
-        ip: 51,
-        keydir: "a",
-        signkey: "5AC53DD3"
-      }, 
-    "lr51a" => 
-      { 
+  otherlr51Nodes = {
+    "lr51a" =>
+      {
         ip: 52,
         keydir: "a",
         signkey: "5AC53DD3"
       },
-    "lr51b" => 
-      { 
+    "lr51b" =>
+      {
         ip: 53,
         keydir: "b",
         signkey: "5AC53DD3"
       },
-    "lr51c" => 
-      { 
+    "lr51c" =>
+      {
         ip: 54,
         keydir: "a",
         signkey: "5AC53DD3"
       }
   }
- 
 
-  lr51Nodes.each_pair do |nodename, node_info|
+
+  otherlr51Nodes.each_pair do |nodename, node_info|
     base_ip = node_info[:ip]
     key_dir = node_info[:keydir]
     signkey = node_info[:signkey]
 
     config.vm.define nodename do |lr51|
       # lr51.vm.box = "lr-51b"
-      lr51.vm.box = "jimklo/lr-ubuntu-51"
+      lr51.vm.box = "learningregistry/lr-ubuntu-51"
       lr51.vm.host_name = "#{nodename}.local"
 
       lr51.vm.network "private_network", ip: "10.0.1.#{base_ip}"
@@ -118,7 +135,7 @@ Vagrant.configure(2) do |config|
       lr51.vm.provider "virtualbox" do |vb|
         # Display the VirtualBox GUI when booting the machine
         vb.gui = false
-      
+
         # Customize the amount of memory on the VM:
         vb.memory = "1024"
 
@@ -132,7 +149,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "lruser" do |lruser|
     # lruser.vm.box = "rjkernick/linuxMint17Xfce"
     # lruser.vm.box = "lruserb"
-    lruser.vm.box = "jimklo/lr-user"
+    lruser.vm.box = "learningregistry/lr-user"
     lruser.vm.host_name = "lruser.local"
 
     # lruser.vm.network "private_network", ip: "10.0.0.5"
@@ -142,7 +159,7 @@ Vagrant.configure(2) do |config|
     lruser.vm.provider "virtualbox" do |vb|
       # Display the VirtualBox GUI when booting the machine
       vb.gui = true
-    
+
       # Customize the amount of memory on the VM:
       vb.memory = "2048"
 
@@ -191,7 +208,7 @@ Vagrant.configure(2) do |config|
    # config.vm.provider "virtualbox" do |vb|
    #   # Display the VirtualBox GUI when booting the machine
    #   vb.gui = true
-  
+
    #   # Customize the amount of memory on the VM:
    #   vb.memory = "2048"
    # end
