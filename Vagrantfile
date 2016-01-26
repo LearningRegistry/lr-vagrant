@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
   config.hostmanager.manage_host = true
   config.hostmanager.include_offline = true
 
-  config.vm.define "lr51", primary: true  do |lr51|
+  config.vm.define "lr51", primary: true, autostart: true  do |lr51|
     lr51.vm.box = "learningregistry/lr-ubuntu-51"
     lr51.vm.host_name = "lr51.local"
 
@@ -50,7 +50,7 @@ Vagrant.configure(2) do |config|
 
   end
 
-  config.vm.define "lr49", primary: false  do |lr49|
+  config.vm.define "lr49", primary: false, autostart: false  do |lr49|
     # lr49.vm.box = "lr-49b"
     lr49.vm.box = "learningregistry/lr-ubuntu-49"
     lr49.vm.host_name = "lr49.local"
@@ -102,7 +102,7 @@ Vagrant.configure(2) do |config|
     key_dir = node_info[:keydir]
     signkey = node_info[:signkey]
 
-    config.vm.define nodename do |lr51|
+    config.vm.define nodename, autostart: false do |lr51|
       # lr51.vm.box = "lr-51b"
       lr51.vm.box = "learningregistry/lr-ubuntu-51"
       lr51.vm.host_name = "#{nodename}.local"
@@ -146,7 +146,7 @@ Vagrant.configure(2) do |config|
   end
 
 
-  config.vm.define "lruser" do |lruser|
+  config.vm.define "lruser", primary: false, autostart: true do |lruser|
     # lruser.vm.box = "rjkernick/linuxMint17Xfce"
     # lruser.vm.box = "lruserb"
     lruser.vm.box = "learningregistry/lr-user"
