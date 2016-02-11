@@ -31,9 +31,10 @@ There are the basic Vagrant VMs as listed in the table below:
 | lr51        | lr51.local    | This is a Learning Registry v.51 node with a     |
 |             |               | base configuration using a sample GPG Key.       |
 +-------------+---------------+--------------------------------------------------+
-| lruser      | lruser.local  | This is a Linux Mint desktop VM. Can be used     |
-|             |               | in-lieu of permitting the HOST's ``/etc/hosts``  |
-|             |               | file from being modified.                        |
+| lruser      | lruser.local  | **Optional VM.** This is a Linux Mint desktop VM.|
+|             |               | Can be used to access the apps running on lr51   |
+|             |               | VM. Alternative to using this is updating host's |
+|             |               | hosts file to point to IP's of the VMs.          |
 +-------------+---------------+--------------------------------------------------+
 
 
@@ -75,7 +76,7 @@ Instructions
 
 Notes
 -----
-* You will need approximately 50 GB free on your host machine with 8GB RAM or more, 16+ preferred.
+* You will need approximately 50 GB free on your host machine with 2GB RAM or more, 8+ preferred.
 * The VMs will take quite a long time to download the base boxes the first time, but are then cached locally in ``$HOME/.vagrant``. You can get a list of these boxes by issuing the following command.
 
 	**Using bash**
