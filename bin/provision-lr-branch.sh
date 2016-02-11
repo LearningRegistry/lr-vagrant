@@ -30,4 +30,3 @@ sudo -u learnreg git fetch --all
 sudo -u learnreg git pull
 
 popd
-

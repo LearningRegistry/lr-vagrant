@@ -18,3 +18,4 @@
 
 $(/vagrant/bin/provision-lr-branch.sh origin https://github.com/LearningRegistry/LearningRegistry.git 0.50.1)
 $(/vagrant/bin/provision-fix-start-script.sh)
+
