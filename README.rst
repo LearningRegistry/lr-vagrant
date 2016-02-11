@@ -20,17 +20,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
-Vagrant Box Details
-===================
+Vagrant Box Detailas
+====================
 
 There are the basic Vagrant VMs as listed in the table below:
 
 +-------------+---------------+--------------------------------------------------+
 | Vagrant ID  | Hostname      | Description                                      |
 +=============+===============+==================================================+
-| lr49        | lr49.local    | This is a Learning Registry v.49 node with a     |
-|             |               | base configuration using a sample GPG Key.       |
-+-------------+---------------+--------------------------------------------------+
 | lr51        | lr51.local    | This is a Learning Registry v.51 node with a     |
 |             |               | base configuration using a sample GPG Key.       |
 +-------------+---------------+--------------------------------------------------+
@@ -70,7 +67,6 @@ Instructions
 
 	::
 
-		$ vagrant up lr49   ## this is a Learning Registry v.49 demo node.
 		$ vagrant up lr51   ## this is a Learning Registry v.51 demo node.
 		$ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
 
@@ -138,14 +134,29 @@ Signing keys for performing external document signing are located in ``./signing
 | 0180320D8A7698E0104790374212BA1AAF82338A | vagrant    | jim.klo+test.49@learningregistry.org   |
 +------------------------------------------+------------+----------------------------------------+
 
+Setting up Learning Registry 0.49 VM
+====================================
++-------------+---------------+--------------------------------------------------+
+| Vagrant ID  | Hostname      | Description                                      |
++=============+===============+==================================================+
+| lr49        | lr49.local    | This is a legacy Learning Registry v.49 node     |
+|             |               | with a base configuration using a sample GPG Key.|
++-------------+---------------+--------------------------------------------------+
+
+1. Launch lr49 VM. Each line launches a different VM.
+
+	**Using bash**
+	::
+
+		$ vagrant up lr49   ## this is a Learning Registry v.49 demo node.
+
 Workflows
-=========
+---------
 
 Test .49 to .51 distribution
-----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Steps**
 
-Steps
-^^^^^
 
 0. Provision 2 nodes
 
