@@ -43,6 +43,12 @@ echo 'Waiting 60 seconds for ports to clear.'
 
 sleep 60
 
+echo 'Setting Learning Registry boot order'
+
+sudo update-rc.d  -f learningregistry remove
+
+sudo update-rc.d learningregistry defaults 99
+
 sudo service learningregistry start
 
 echo 'Waiting 10 seconds for log to generate.'
