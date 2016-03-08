@@ -28,8 +28,14 @@ There are the basic Vagrant VMs as listed in the table below:
 +-------------+---------------+--------------------------------------------------+
 | Vagrant ID  | Hostname      | Description                                      |
 +=============+===============+==================================================+
-| lr51        | lr51.local    | This is a Learning Registry v.51 node with a     |
-|             |               | base configuration using a sample GPG Key.       |
+| lr          | lr.local      | This is a Learning Registry node with a base     |
+|             |               | configuration, running latest stable LR code.    |
++-------------+---------------+--------------------------------------------------+
+| lr51        | lr51.local    | **Optional VM.** This is a Learning Registry     |
+|             |               | v.51 node with a base configuration.             |
++-------------+---------------+--------------------------------------------------+
+| lr49        | lr49.local    | **Optional VM.** This is a Learning Registry     |
+|             |               | v.49 node with a base configuration.             |
 +-------------+---------------+--------------------------------------------------+
 | lruser      | lruser.local  | **Optional VM.** This is a Linux Mint desktop VM.|
 |             |               | Can be used to access the apps running on lr51   |
@@ -62,21 +68,30 @@ Instructions
 
     	$ vagrant plugin install vagrant-hostmanager
 
-5. Launch some VM's. Each line launches a different VM.
+5. Launch the VM's. Each line launches a different VM.
 
 	**Using bash**
 
 	::
 
-		$ vagrant up lr51   ## this is a Learning Registry v.51 demo node.
+		$ vagrant up  ## this is a Learning Registry demo node, using latest stable code
 		$ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
 
-6. VMs should be running.
+6. Optional LR User VM
+
+    **Using bash**
+
+    ::
+
+        $ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
+
+
+7. VMs should be running... http://lr.local/
 
 
 Notes
 -----
-* You will need approximately 50 GB free on your host machine with 2GB RAM or more, 8+ preferred.
+* You will need approximately 10 GB free on your host machine with 2GB RAM or more, 8+ preferred... for each VM you want to run.
 * The VMs will take quite a long time to download the base boxes the first time, but are then cached locally in ``$HOME/.vagrant``. You can get a list of these boxes by issuing the following command.
 
 	**Using bash**
@@ -88,6 +103,25 @@ Notes
 * You can set an environment variable in your profile if you want to use an external drive to store VMs: ``export VAGRANT_HOME=/Volumes/MyExternalDrive/vagrant``
 * You may be prompted to enter your host machine admin password to update ``/etc/hosts`` or equivalent on Windows.
 * When the box is launched, this directory is shared on the the vagrant box as ``/vagrant``
+* This project was initially developed to test distribution between nodes running v0.49 and v0.51 and use of admin whitelisted keys. Information on those setups can be found in ``test/LRv49-51_ReadMe.rst``
+
+Setup for development from the host machine
+-----
+Using a vagrant synced folder you can do development on your local (host) machine while running the code on the virtual machine. To implement this setup (only needs to be done once):
+
+1. Shutdown the node if it's running: ``vagrant halt lr``
+
+2. Uncomment and update the ``lr.vm.synced_folder`` in Vagrantfile with your local LearningRegistry src folder location
+
+3. Start the node, and then run the ``bin/setup_local_dev.sh`` script
+
+    **Using bash**
+
+    ::
+
+        $ vagrant up lr
+        $ vagrant ssh lr -c '/vagrant/bin/setup_local_dev.sh'
+
 
 
 Scripts
@@ -115,6 +149,8 @@ The ``bin`` directory contains a list of misc scripts that can be run via
 +-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 | ``install_whitelist_key.py``                                | Configures ``/vagrant/signing_keys/pub_keys/`` as the Admin Whitelist Public Keys directory. |
 +-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
+| ``setup_local_dev.sh``                                      | Sets LR_HOME to /lr_src synced_folder for local dev (see instructions above)                 |
++-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 
 
 
@@ -123,79 +159,16 @@ GPG Public and Private Keys
 
 Signing keys for performing external document signing are located in ``./signing_keys``.
 
-+------------------------------------------+------------+----------------------------------------+
-| Key ID / Fingerprint                     | Passphrase | email                                  |
-+==========================================+============+========================================+
-| 175FBB7D5D6F5B9A504F95D8B7B49BA3A7409F8A | whitelist  | jim.klo+whitelist@learningregistry.org |
-+------------------------------------------+------------+----------------------------------------+
-| 01916AE1DC8F279352E3FE6705510FF20CC118C7 | vagrant    | jim.klo+vagrant@learningregistry.org   |
-+------------------------------------------+------------+----------------------------------------+
-| 59CB75D2C7D6F8FB649E30EF9E735BEE5AC53DD3 | vagrant    | jim.klo+test.51@learningregistry.org   |
-+------------------------------------------+------------+----------------------------------------+
-| 0180320D8A7698E0104790374212BA1AAF82338A | vagrant    | jim.klo+test.49@learningregistry.org   |
-+------------------------------------------+------------+----------------------------------------+
-
-Workflows
-=========
-
-Test .51 Whitelist Keys
------------------------
-
-Steps
-^^^^^
-
-0. Create new GPG keys
-
-     a) 2 keys will be installed as whitelist keys
-     b) 1 key will be installed as node signing key
-     c) 1 key will be used as a local signing key
-
-1. Provision 3 nodes:
-
-     a) lr51a.local (node A)
-
-          0. install node signing key
-          1. install whitelist key A
-
-     b) lr51b.local (node B)
-
-          0. install whitelist key B
-
-     c) lr51c.local (node C)
-
-          0. install whitelist key A
-
-2. Configure node distribution
-
-	 a) lr51a.local --> lr51b.local
-	 b) lr51a.local --> lr51c.local
-
-3. Publish a series of documents and replacments to lr51a.local
-
-	 a) local signed original doc and local signed replacement
-
-	 	  0. this should always work (nodes A, B and C)
-
-	 b) local signed original doc and whitelist key A signed replacement
-
-		  0. this should work on nodes trusting whitelist key A (nodes A and C)
-
-	 c) node signed original doc and whitelist key A signed replacement
-
-	      0. this should work on nodes trusting whitelist key A (nodes A and C)
-
-	 d) node signed original doc and whitelist key B signed replacement
-
-	      0. this should work on nodes trusting whitelist key B (node B)
-
-4. Trigger distribution on node A.
-
-5. Verify each nodes' distribution content.
-
-
-Commands
-^^^^^^^^
-
-.. code-block:: bash
-
-    vagrant up lr51a lr51b lr51c; ./test/test_distribute_whitelist.sh; ./test/test_whitelist.sh; vagrant ssh lr51a -c "curl -X POST http://lr51a.local/distribute"
++------------------------------------------+------------+------------------------------------------+
+| Key ID / Fingerprint                     | Passphrase | email                                    |
++==========================================+============+==========================================+
+| 175FBB7D5D6F5B9A504F95D8B7B49BA3A7409F8A | whitelist  | jim.klo+whitelist@learningregistry.org   |
++------------------------------------------+------------+------------------------------------------+
+| 01916AE1DC8F279352E3FE6705510FF20CC118C7 | vagrant    | administratory+test@learningregistry.org |
++------------------------------------------+------------+------------------------------------------+
+| 01916AE1DC8F279352E3FE6705510FF20CC118C7 | vagrant    | jim.klo+vagrant@learningregistry.org     |
++------------------------------------------+------------+------------------------------------------+
+| 59CB75D2C7D6F8FB649E30EF9E735BEE5AC53DD3 | vagrant    | jim.klo+test.51@learningregistry.org     |
++------------------------------------------+------------+------------------------------------------+
+| 0180320D8A7698E0104790374212BA1AAF82338A | vagrant    | jim.klo+test.49@learningregistry.org     |
++------------------------------------------+------------+------------------------------------------+

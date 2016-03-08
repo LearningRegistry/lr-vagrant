@@ -31,6 +31,9 @@ echo 'Updating '
 
 pushd ./config
 
+echo 'Waiting 30 seconds to give couch a chance to start before running LR setup'
+sleep 30
+
 sudo -u learnreg bash -c 'source /home/learnreg/env/bin/activate; python ./service_util.py < /vagrant/bin/typescript_service_util.txt ; deactivate'
 
 sudo cp -f ./learningregistry.sh /etc/init.d/learningregistry
@@ -42,6 +45,12 @@ sudo chmod +x /etc/init.d/learningregistry
 echo 'Waiting 60 seconds for ports to clear.'
 
 sleep 60
+
+echo 'Setting Learning Registry boot order'
+
+sudo update-rc.d  -f learningregistry remove
+
+sudo update-rc.d learningregistry defaults 99
 
 sudo service learningregistry start
 

@@ -35,6 +35,15 @@ Vagrant.configure(2) do |config|
     lr.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
     lr.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5984, auto_correct: true
     lr.ssh.insert_key = false
+
+    # Local src folder for development. See README.rst ... OPTIONAL
+    #lr.vm.synced_folder "/Users/localuser/LR_src", "/lr_src", owner: "learnreg", group: "learnreg", mount_options: ["dmode=775,fmode=664"]
+
+    # fix audience parameter in couch config (for browserID and Mozilla Persona)
+    lr.vm.provision "fix-couchdb", type:"shell", inline: <<-SCRIPT
+      /home/learnreg/env/bin/python /vagrant/bin/fix_couch.py -audience lr.local
+    SCRIPT
+
     lr.vm.provider "virtualbox" do |vb|
       # Display the VirtualBox GUI when booting the machine
       vb.gui = false
