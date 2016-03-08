@@ -16,5 +16,11 @@
 #   limitations under the License.
 #
 
-$(/vagrant/bin/provision-lr-head.sh)
-$(/vagrant/bin/provision-fix-start-script.sh)
+KEYID=$1
+HOST=$2
+
+/vagrant/bin/provision-lr-head.sh
+sudo -u learnreg -i /vagrant/bin/install_signing_key.py -keyid $KEYID -hostname $HOST
+sudo -u learnreg -i /vagrant/bin/set_loglevel.py -level INFO
+/vagrant/bin/provision-fix-start-script.sh
+

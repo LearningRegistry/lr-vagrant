@@ -27,26 +27,26 @@ Vagrant.configure(2) do |config|
   config.hostmanager.manage_host = true
   config.hostmanager.include_offline = true
 
-  config.vm.define "lr51", primary: true, autostart: true  do |lr51|
-    lr51.vm.box = "learningregistry/lr-ubuntu-51"
-    lr51.vm.host_name = "lr51.local"
+  config.vm.define "lr", primary: true, autostart: true do |lr|
+    lr.vm.box = "learningregistry/lr-ubuntu-master"
+    lr.vm.host_name = "lr.local"
 
-    lr51.vm.network "private_network", ip: "10.0.1.51"
-    lr51.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-    # lr51.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5984, auto_correct: true
-    lr51.ssh.insert_key = false
-    lr51.vm.provider "virtualbox" do |vb|
+    lr.vm.network "private_network", ip: "10.0.1.99"
+    lr.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    lr.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5984, auto_correct: true
+    lr.ssh.insert_key = false
+    lr.vm.provider "virtualbox" do |vb|
       # Display the VirtualBox GUI when booting the machine
       vb.gui = false
 
       # Customize the amount of memory on the VM:
       vb.memory = "1024"
 
-      vb.name = "LR Node v.51"
+      vb.name = "LR Dev Node"
     end
 
-    lr51.vm.provision "shell", path: "bin/post-provision-lr51.sh",
-      args: ["5AC53DD3", "lr51.local"]
+    lr.vm.provision "shell", path: "bin/post-provision-lr-master.sh",
+      args: ["E1C4248B", "lr.local"]
 
   end
 
@@ -75,7 +75,13 @@ Vagrant.configure(2) do |config|
   end
 
 
-  otherlr51Nodes = {
+  lr51Nodes = {
+    "lr51" =>
+      {
+        ip: 51,
+        keydir: "a",
+        signkey: "5AC53DD3"
+      },
     "lr51a" =>
       {
         ip: 52,
@@ -97,7 +103,7 @@ Vagrant.configure(2) do |config|
   }
 
 
-  otherlr51Nodes.each_pair do |nodename, node_info|
+  lr51Nodes.each_pair do |nodename, node_info|
     base_ip = node_info[:ip]
     key_dir = node_info[:keydir]
     signkey = node_info[:signkey]
@@ -146,7 +152,7 @@ Vagrant.configure(2) do |config|
   end
 
 
-  config.vm.define "lruser", primary: false, autostart: true do |lruser|
+  config.vm.define "lruser", primary: false, autostart: false do |lruser|
     # lruser.vm.box = "rjkernick/linuxMint17Xfce"
     # lruser.vm.box = "lruserb"
     lruser.vm.box = "learningregistry/lr-user"
