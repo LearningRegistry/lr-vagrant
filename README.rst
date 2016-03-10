@@ -113,7 +113,7 @@ Using a vagrant synced folder you can do development on your local (host) machin
 
 2. Uncomment and update the ``lr.vm.synced_folder`` in Vagrantfile with your local LearningRegistry src folder location
 
- * If you are running on Windows, you will need to escape your file path. i.e.: 
+   * If you are running on Windows, you will need to escape your file path. i.e.: 
  
     ::
 
