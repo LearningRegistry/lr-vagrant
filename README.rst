@@ -74,7 +74,7 @@ Instructions
 
 	::
 
-		$ vagrant up  ## this is a Learning Registry demo node, using latest stable code
+		$ vagrant up lr ## this is a Learning Registry demo node, using latest stable code
 		$ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
 
 6. Optional LR User VM

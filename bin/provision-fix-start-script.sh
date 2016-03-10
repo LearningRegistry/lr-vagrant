@@ -59,4 +59,3 @@ echo 'Waiting 10 seconds for log to generate.'
 sleep 10
 
 sudo cat /var/log/learningregistry/uwsgi.log
-
