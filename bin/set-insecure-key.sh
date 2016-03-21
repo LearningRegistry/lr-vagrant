@@ -28,3 +28,4 @@ wget --no-check-certificate https://raw.githubusercontent.com/mitchellh/vagrant/
 chmod 700 .ssh
 chmod 600 .ssh/authorized_keys
 chown -R vagrant:vagrant .ssh
+

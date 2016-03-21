@@ -16,17 +16,10 @@
 #   limitations under the License.
 #
 
-origin=$1
-url=$2
-tag=$3
+KEYID=$1
+HOST=$2
 
-pushd /home/learnreg/LearningRegistry
-#sudo -u learnreg git checkout master
-#sudo -u learnreg git branch -D ${origin}/${tag}
-#sudo -u learnreg git remote add ${origin} ${url}
-sudo -u learnreg git fetch --all
-#sudo -u learnreg git fetch --tags
-#sudo -u learnreg git checkout tags/${tag} -b ${origin}/${tag}
-sudo -u learnreg git pull
-
-popd
+/vagrant/bin/provision-lr-head.sh
+sudo -u learnreg -i /vagrant/bin/install_signing_key.py -keyid $KEYID -hostname $HOST
+sudo -u learnreg -i /vagrant/bin/set_loglevel.py -level INFO
+/vagrant/bin/provision-fix-start-script.sh
