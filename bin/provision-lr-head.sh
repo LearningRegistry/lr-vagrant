@@ -16,5 +16,9 @@
 #   limitations under the License.
 #
 
-$(/vagrant/bin/provision-lr-head.sh)
-$(/vagrant/bin/provision-fix-start-script.sh)
+pushd /home/learnreg/LearningRegistry
+sudo -u learnreg git checkout master
+sudo -u learnreg git fetch --all
+sudo -u learnreg git pull
+
+popd

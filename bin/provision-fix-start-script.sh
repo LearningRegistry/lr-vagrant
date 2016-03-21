@@ -31,6 +31,9 @@ echo 'Updating '
 
 pushd ./config
 
+echo 'Waiting 30 seconds to give couch a chance to start before running LR setup'
+sleep 30
+
 sudo -u learnreg bash -c 'source /home/learnreg/env/bin/activate; python ./service_util.py < /vagrant/bin/typescript_service_util.txt ; deactivate'
 
 sudo cp -f ./learningregistry.sh /etc/init.d/learningregistry
@@ -56,4 +59,3 @@ echo 'Waiting 10 seconds for log to generate.'
 sleep 10
 
 sudo cat /var/log/learningregistry/uwsgi.log
-
