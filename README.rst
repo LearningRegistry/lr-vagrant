@@ -25,23 +25,27 @@ Vagrant Box Detailas
 
 There are the basic Vagrant VMs as listed in the table below:
 
-+-------------+---------------+--------------------------------------------------+
-| Vagrant ID  | Hostname      | Description                                      |
-+=============+===============+==================================================+
-| lr          | lr.local      | This is a Learning Registry node with a base     |
-|             |               | configuration, running latest stable LR code.    |
-+-------------+---------------+--------------------------------------------------+
-| lr51        | lr51.local    | **Optional VM.** This is a Learning Registry     |
-|             |               | v.51 node with a base configuration.             |
-+-------------+---------------+--------------------------------------------------+
-| lr49        | lr49.local    | **Optional VM.** This is a Learning Registry     |
-|             |               | v.49 node with a base configuration.             |
-+-------------+---------------+--------------------------------------------------+
-| lruser      | lruser.local  | **Optional VM.** This is a Linux Mint desktop VM.|
-|             |               | Can be used to access the apps running on lr51   |
-|             |               | VM. Alternative to using this is updating host's |
-|             |               | hosts file to point to IP's of the VMs.          |
-+-------------+---------------+--------------------------------------------------+
++-------------+----------------+--------------------------------------------------+
+| Vagrant ID  | Hostname       | Description                                      |
++=============+================+==================================================+
+| lr          | lr.local       | This is a Learning Registry node with a base     |
+|             |                | configuration, running latest stable LR code.    |
++-------------+----------------+--------------------------------------------------+
+| lr51        | lr51.local     | **Optional VM.** This is a Learning Registry     |
+|             |                | v.51 node with a base configuration.             |
++-------------+----------------+--------------------------------------------------+
+| lr49        | lr49.local     | **Optional VM.** This is a Learning Registry     |
+|             |                | v.49 node with a base configuration.             |
++-------------+----------------+--------------------------------------------------+
+| lruser      | lruser.local   | **Optional VM.** This is a Linux Mint desktop VM.|
+|             |                | Can be used to access the apps running on lr51   |
+|             |                | VM. Alternative to using this is updating host's |
+|             |                | hosts file to point to IP's of the VMs.          |
++-------------+----------------+--------------------------------------------------+
+| lrsearch    | lrsearch.local | **Optional VM.** Local dev copy of LR Search     |
+|             |                | services. Provides the LR-Data indexing, the     |
+|             |                | search widget manager app, and the search APIs.  |
++-------------+----------------+--------------------------------------------------+
 
 
 Instructions
@@ -75,7 +79,7 @@ Instructions
 	::
 
 		$ vagrant up lr ## this is a Learning Registry demo node, using latest stable code
-		$ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
+        $ vagrant up lrsearch  ## this is the LR Search services, which points at local lr by default but could be used solo with public LR nodes.
 
 6. Optional LR User VM
 
@@ -86,7 +90,7 @@ Instructions
         $ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
 
 
-7. VMs should be running... http://lr.local/
+7. VMs should be running... http://lr.local/ or http://lrsearch.local/
 
 
 Notes
@@ -113,12 +117,12 @@ Using a vagrant synced folder you can do development on your local (host) machin
 
 2. Uncomment and update the ``lr.vm.synced_folder`` in Vagrantfile with your local LearningRegistry src folder location
 
-   * If you are running on Windows, you will need to escape your file path. i.e.: 
- 
+   * If you are running on Windows, you will need to escape your file path. i.e.:
+
     ::
 
 		"G:\\LearningRegistry\\source"
-		
+
 3. Start the node, and then run the ``bin/setup_local_dev.sh`` script
 
     **Using bash**
