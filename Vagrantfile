@@ -33,7 +33,8 @@ Vagrant.configure(2) do |config|
 
     lr.vm.network "private_network", ip: "10.0.1.99"
     lr.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
-    lr.vm.network "forwarded_port", guest: 5984, guest_ip: "127.0.0.1", host: 5984, auto_correct: true
+    lr.vm.network "forwarded_port", guest: 5984, host: 5984, auto_correct: true
+    #lr.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
     lr.ssh.insert_key = false
 
     # Local src folder for development. See README.rst ... OPTIONAL
@@ -52,6 +53,9 @@ Vagrant.configure(2) do |config|
       vb.memory = "1024"
 
       vb.name = "LR Dev Node"
+
+      # Don't let the VM bogart the host CPU
+      vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
     end
 
     lr.vm.provision "shell", path: "bin/post-provision-lr-master.sh",
@@ -182,6 +186,31 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  config.vm.define "lrsearch", primary: false, autostart: false do |lrsearch|
+    #lrsearch.vm.box = "ubuntu/xenial64"
+    lrsearch.vm.box = "learningregistry/lr-search"
+    lrsearch.vm.host_name = "lrsearch.local"
+    lrsearch.hostmanager.aliases = "test-search.learningregistry.net"
+
+    lrsearch.vm.network "private_network", ip: "192.168.33.33"
+
+    lrsearch.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+    #lrsearch.vm.network "private_network", type: "dhcp"
+    lrsearch.ssh.insert_key = false
+
+    lrsearch.vm.provider "virtualbox" do |vb|
+      # Display the VirtualBox GUI when booting the machine
+      vb.gui = false
+
+      # Customize the amount of memory on the VM:
+      vb.memory = "2048"
+
+      vb.name = "LR Search"
+	  vb.customize [ "modifyvm", :id, "--uart1", "0x3F8", "4" ]
+	  vb.customize [ "modifyvm", :id, "--uartmode1", "file", File.join(Dir.pwd, "ubuntu-xenial-16.04-cloudimg-console.log") ]
+    end
+  end
+
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
@@ -190,7 +219,7 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   # config.vm.box = "ubuntu-couchdb"
 
-  # config.vm.host_name = "lr49.local"
+  # config.vm.host_name = "lr.local"
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.

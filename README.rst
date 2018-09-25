@@ -2,46 +2,40 @@
 LR Vagrant Readme
 *****************
 
-License
-=======
+Overview
+====================
 
-Copyright 2015 Jim Klo <jim@arkitec.com>
+The `Learning Registry <https://github.com/LearningRegistry/LearningRegistry/wiki>`_ is a project spearheaded by the US Department of Education's Office of Educational Technology to make digital learning resources easier to find, easier to access and easier to integrate into learning environments wherever they are stored -- around the country and the world. Although the Department's public nodes were shuttered in September 2018, the project codebase lives on and can be adapted by anyone for public or private use.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The LR-Vagrant project provides configurations and virtualbox images to start up and test Learning Registry nodes, or the LR Search server. More information on the `LR-Data <https://github.com/navnorth/lr-data>`_ and `LR Search Widget <https://github.com/navnorth/lr-search-widget>`_ projects can be found on their respective GitHub repos.
 
 
-Vagrant Box Detailas
+Vagrant Box Details
 ====================
 
 There are the basic Vagrant VMs as listed in the table below:
 
-+-------------+---------------+--------------------------------------------------+
-| Vagrant ID  | Hostname      | Description                                      |
-+=============+===============+==================================================+
-| lr          | lr.local      | This is a Learning Registry node with a base     |
-|             |               | configuration, running latest stable LR code.    |
-+-------------+---------------+--------------------------------------------------+
-| lr51        | lr51.local    | **Optional VM.** This is a Learning Registry     |
-|             |               | v.51 node with a base configuration.             |
-+-------------+---------------+--------------------------------------------------+
-| lr49        | lr49.local    | **Optional VM.** This is a Learning Registry     |
-|             |               | v.49 node with a base configuration.             |
-+-------------+---------------+--------------------------------------------------+
-| lruser      | lruser.local  | **Optional VM.** This is a Linux Mint desktop VM.|
-|             |               | Can be used to access the apps running on lr51   |
-|             |               | VM. Alternative to using this is updating host's |
-|             |               | hosts file to point to IP's of the VMs.          |
-+-------------+---------------+--------------------------------------------------+
++-------------+----------------+--------------------------------------------------+
+| Vagrant ID  | Hostname       | Description                                      |
++=============+================+==================================================+
+| lr          | lr.local       | This is a Learning Registry node with a base     |
+|             |                | configuration, running latest stable LR code.    |
++-------------+----------------+--------------------------------------------------+
+| lr51        | lr51.local     | **Optional VM.** This is a Learning Registry     |
+|             |                | v.51 node with a base configuration.             |
++-------------+----------------+--------------------------------------------------+
+| lr49        | lr49.local     | **Optional VM.** This is a Learning Registry     |
+|             |                | v.49 node with a base configuration.             |
++-------------+----------------+--------------------------------------------------+
+| lruser      | lruser.local   | **Optional VM.** This is a Linux Mint desktop VM.|
+|             |                | Can be used to access the apps running on lr51   |
+|             |                | VM. Alternative to using this is updating host's |
+|             |                | hosts file to point to IP's of the VMs.          |
++-------------+----------------+--------------------------------------------------+
+| lrsearch    | lrsearch.local | **Optional VM.** Local dev copy of LR Search     |
+|             |                | services. Provides the LR-Data indexing, the     |
+|             |                | search widget manager app, and the search APIs.  |
++-------------+----------------+--------------------------------------------------+
 
 
 Instructions
@@ -51,31 +45,31 @@ Instructions
 2. Install Vagrant https://www.vagrantup.com
 3. Open a Terminal, shell, or command prompt and clone this repository.
 
-	**Using bash**
+    **Using bash**
 
-	::
+    ::
 
-	    $ mkdir -p /<some work path>/
-	    $ cd /<some work path>/
-	    $ git clone https://github.com/LearningRegistry/lr-vagrant.git lr-vagrant
-	    $ cd lr-vagrant
+        $ mkdir -p /<some work path>/
+        $ cd /<some work path>/
+        $ git clone https://github.com/LearningRegistry/lr-vagrant.git lr-vagrant
+        $ cd lr-vagrant
 
 4. Install some vagrant plugins.
 
- 	**Using bash**
+    **Using bash**
 
- 	::
+    ::
 
-    	$ vagrant plugin install vagrant-hostmanager
+        $ vagrant plugin install vagrant-hostmanager
 
 5. Launch the VM's. Each line launches a different VM.
 
-	**Using bash**
+    **Using bash**
 
-	::
+    ::
 
-		$ vagrant up lr ## this is a Learning Registry demo node, using latest stable code
-		$ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
+        $ vagrant up lr ## this is a Learning Registry demo node, using latest stable code
+        $ vagrant up lrsearch  ## this is the LR Search services, which points at local lr by default but could be used solo with public LR nodes.
 
 6. Optional LR User VM
 
@@ -86,7 +80,7 @@ Instructions
         $ vagrant up lruser  ## this is a Linux Mint desktop that can be used as a client on the same network as the other VMs
 
 
-7. VMs should be running... http://lr.local/
+7. VMs should be running... http://lr.local/ or http://lrsearch.local/
 
 
 Notes
@@ -94,11 +88,11 @@ Notes
 * You will need approximately 10 GB free on your host machine with 2GB RAM or more, 8+ preferred... for each VM you want to run.
 * The VMs will take quite a long time to download the base boxes the first time, but are then cached locally in ``$HOME/.vagrant``. You can get a list of these boxes by issuing the following command.
 
-	**Using bash**
+    **Using bash**
 
-	::
+    ::
 
-		$ vagrant box list
+        $ vagrant box list
 
 * You can set an environment variable in your profile if you want to use an external drive to store VMs: ``export VAGRANT_HOME=/Volumes/MyExternalDrive/vagrant``
 * You may be prompted to enter your host machine admin password to update ``/etc/hosts`` or equivalent on Windows.
@@ -113,12 +107,12 @@ Using a vagrant synced folder you can do development on your local (host) machin
 
 2. Uncomment and update the ``lr.vm.synced_folder`` in Vagrantfile with your local LearningRegistry src folder location
 
-   * If you are running on Windows, you will need to escape your file path. i.e.: 
- 
+   * If you are running on Windows, you will need to escape your file path. i.e.:
+
     ::
 
-		"G:\\LearningRegistry\\source"
-		
+        "G:\\LearningRegistry\\source"
+
 3. Start the node, and then run the ``bin/setup_local_dev.sh`` script
 
     **Using bash**
@@ -135,11 +129,11 @@ Scripts
 
 The ``bin`` directory contains a list of misc scripts that can be run via
 
-	**Using bash**
+    **Using bash**
 
-	::
+    ::
 
-	    $ vagrant ssh <boxname> -c '/vagrant/bin/<script name>'
+        $ vagrant ssh <boxname> -c '/vagrant/bin/<script name>'
 
 +-------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 | Script Name                                                 | Description                                                                                  |
@@ -178,3 +172,21 @@ Signing keys for performing external document signing are located in ``./signing
 +------------------------------------------+------------+------------------------------------------+
 | 0180320D8A7698E0104790374212BA1AAF82338A | vagrant    | jim.klo+test.49@learningregistry.org     |
 +------------------------------------------+------------+------------------------------------------+
+
+
+License
+=======
+
+Copyright 2015 Jim Klo <jim@arkitec.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
